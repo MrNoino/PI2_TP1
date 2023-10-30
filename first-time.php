@@ -2,15 +2,17 @@
 
 session_start();
 
+include("./lib/model/Admin.php");
+
 if(isset($_SESSION["food_saver_lang"])){
 
     //verifica se os ficheiros do idioma existem
     //se sim
-    if(file_exists("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_nav_". $_SESSION["food_saver_lang"] .".php") && file_exists("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_index_". $_SESSION["food_saver_lang"] .".php") && file_exists("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_footer_". $_SESSION["food_saver_lang"] .".php")){
+    if(file_exists("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_nav_". $_SESSION["food_saver_lang"] .".php") && file_exists("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_first-time_". $_SESSION["food_saver_lang"] .".php") && file_exists("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_footer_". $_SESSION["food_saver_lang"] .".php")){
 
         //importa os ficheiros do idioma escolhido
         //include_once("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_nav_". $_SESSION["food_saver_lang"] .".php");
-        include_once("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_index_". $_SESSION["food_saver_lang"] .".php");
+        include_once("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_first-time_". $_SESSION["food_saver_lang"] .".php");
         //include_once("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_footer_". $_SESSION["food_saver_lang"] .".php");
 
     //senao
@@ -18,7 +20,7 @@ if(isset($_SESSION["food_saver_lang"])){
 
         //importa os ficheiros do idioma por defeito
         //include_once("src/languages/pt-PT/i18n_nav_pt-PT.php");
-        include_once("src/languages/pt-PT/i18n_index_pt-PT.php");
+        include_once("src/languages/pt-PT/i18n_first-time_pt-PT.php");
         //include_once("src/languages/pt-PT/i18n_footer_pt-PT.php");
 
     }
@@ -28,11 +30,14 @@ if(isset($_SESSION["food_saver_lang"])){
 
     //importa os ficheiros do idioma por defeito
     //include_once("src/languages/pt-PT/i18n_nav_pt-PT.php");
-    include_once("src/languages/pt-PT/i18n_index_pt-PT.php");
+    include_once("src/languages/pt-PT/i18n_first-time_pt-PT.php");
     //include_once("src/languages/pt-PT/i18n_footer_pt-PT.php");
 
-}
+    $admin = new Admin();
 
+    $admin->generateRandomAdmin();
+
+}
 
 ?>
 
@@ -43,10 +48,9 @@ if(isset($_SESSION["food_saver_lang"])){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title><?php echo $index_title; ?></title>
+    <title><?php echo $first_time_title; ?></title>
 
     <link rel="icon" type="image/x-icon" href="./src/assets/logo.jpeg">
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="./src/styles/standart.css"/>
 </head>
@@ -66,44 +70,28 @@ if(isset($_SESSION["food_saver_lang"])){
 
         <div class="row justify-content-center mt-3">
 
-            <div class="col text-center">
+            <div class="col-12 mx-auto text-center">
 
-                <h2 class="text-primary"><?php echo $login_label ?></h2>
+                <h3 class="text-primary"><?php echo $admin_data_label; ?></h2>
 
             </div>
 
         </div>
 
-        <form class="needs-validation">
+        <div class="row justify-content-center mt-3">
 
-            <div class="row g-3 justify-content-center mt-2">
+            <div class="col-12 col-md-6 col-lg-4">
 
-                <div class="col-12 col-md-6 col-lg-4">
-                    <label for="email" class="form-label"><?php echo $email_label; ?></label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="<?php echo $email_placeholder; ?>" required>
-                </div>
-
-            </div>
-            <div class="row g-3 justify-content-center mt-2">
-                <div class="col-12 col-md-6 col-lg-4">
-                    <label for="password" class="form-label"><?php echo $pwd_label; ?></label>
-                    <input type="password" class="form-control" id="pwd" name="password" placeholder="<?php echo $pwd_placeholder; ?>" required>
-                </div>
-            </div>
-
-            <div class="row g-3 justify-content-center mt-3">
-
-                <div class="col-12 col-md-4 col-lg-3 text-center">
-                    <button class="btn btn-primary w-100" type="submit"><?php echo $login_label; ?></button>
-                </div>
+            <ul class="list-group">
+                <li class="list-group-item p-3"><strong><?php echo $username_label;?></strong><?php echo $admin->getUsername(); ?></li>
+                <li class="list-group-item p-3"><strong><?php echo $password_label;?></strong><?php echo $admin->getPassword(); ?><button type="button" class="btn float-end p-0"><img src="./src/assets/eye.svg" height="25"></button></li>
+            </ul>
 
             </div>
 
-        </form>
-
-    </main>
-
+        </div>
     
+    </main>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
