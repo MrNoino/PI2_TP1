@@ -2,7 +2,7 @@
 
 session_start();
 
-include("./lib/model/Admin.php");
+include_once("./lib/model/Admin.php");
 
 if(isset($_SESSION["food_saver_lang"])){
 
@@ -34,6 +34,12 @@ if(isset($_SESSION["food_saver_lang"])){
     //include_once("src/languages/pt-PT/i18n_footer_pt-PT.php");
 
     $admin = new Admin();
+
+    if($admin->getTotalAdmins() > 0){
+
+        header("Location: ./admin.php");
+
+    }
 
     $admin->generateRandomAdmin();
 
@@ -82,10 +88,11 @@ if(isset($_SESSION["food_saver_lang"])){
 
             <div class="col-12 col-md-6 col-lg-4">
 
-            <ul class="list-group">
-                <li class="list-group-item p-3"><strong><?php echo $username_label;?></strong><?php echo $admin->getUsername(); ?></li>
-                <li class="list-group-item p-3"><strong><?php echo $password_label;?></strong><?php echo $admin->getPassword(); ?><button type="button" class="btn float-end p-0"><img src="./src/assets/eye.svg" height="25"></button></li>
-            </ul>
+                <ul class="list-group shadow">
+                    <li class="list-group-item p-3"><strong><?php echo $name_label;?></strong><?php echo $admin->getName(); ?></li>
+                    <li class="list-group-item p-3"><strong><?php echo $username_label;?></strong><?php echo $admin->getUsername(); ?></li>
+                    <li class="list-group-item p-3"><strong><?php echo $password_label;?></strong><?php echo $admin->getPassword(); ?></li>
+                </ul>
 
             </div>
 

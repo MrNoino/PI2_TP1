@@ -27,3 +27,11 @@
     --bs-btn-disabled-border-color: #228B22;
 
 }
+
+.changed_image{
+
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+
+}

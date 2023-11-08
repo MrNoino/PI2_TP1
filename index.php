@@ -2,6 +2,12 @@
 
 session_start();
 
+include_once("./lib/utils.php");
+
+is_first_time();
+
+redirect_login("food_saver_entity_id", "offers.php");
+
 if(isset($_SESSION["food_saver_lang"])){
 
     //verifica se os ficheiros do idioma existem
@@ -33,9 +39,7 @@ if(isset($_SESSION["food_saver_lang"])){
 
 }
 
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="<?php echo (isset($_SESSION["food_saver_lang"]) ? substr($_SESSION["food_saver_lang"], 0, 2) : "pt") ?>">
@@ -80,21 +84,24 @@ if(isset($_SESSION["food_saver_lang"])){
 
                 <div class="col-12 col-md-6 col-lg-4">
                     <label for="email" class="form-label"><?php echo $email_label; ?></label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="<?php echo $email_placeholder; ?>" required>
+                    <input type="email" class="form-control shadow " id="email" name="email" placeholder="<?php echo $email_placeholder; ?>" required>
                 </div>
 
             </div>
-            <div class="row g-3 justify-content-center mt-2">
+            <div class="row g-3 justify-content-center mt-2 align-items-end">
                 <div class="col-12 col-md-6 col-lg-4">
                     <label for="password" class="form-label"><?php echo $pwd_label; ?></label>
-                    <input type="password" class="form-control" id="pwd" name="password" placeholder="<?php echo $pwd_placeholder; ?>" required>
+                    <div class="input-group">
+                        <input id="input_password" type="password" class="form-control d-inline shadow" id="pwd" name="password" placeholder="<?php echo $pwd_placeholder; ?>" required>
+                        <button id="toggle_show_password" type="button" class="btn btn-outline-secondary bg-transparent shadow  float-end p-1"><img id="toggle_show_password_img" class="changed_image" src="./src/assets/eye.svg" height="35"></button>
+                    </div>
                 </div>
             </div>
 
             <div class="row g-3 justify-content-center mt-3">
 
                 <div class="col-12 col-md-4 col-lg-3 text-center">
-                    <button class="btn btn-primary w-100" type="submit"><?php echo $login_label; ?></button>
+                    <button class="btn btn-primary w-100 shadow" type="submit"><?php echo $login_label; ?></button>
                 </div>
 
             </div>
@@ -103,8 +110,7 @@ if(isset($_SESSION["food_saver_lang"])){
 
     </main>
 
-    
-    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="./src/js/utils.js"></script>
 </body>
 </html>
