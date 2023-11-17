@@ -2,48 +2,41 @@
 
 session_start();
 
-include_once("./lib/model/Admin.php");
+include_once("lib/utils.php");
+include_once("./lib/controller/ManageAdmins.php");
+
+chooseLang();
 
 if(isset($_SESSION["food_saver_lang"])){
 
-    //verifica se os ficheiros do idioma existem
-    //se sim
-    if(file_exists("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_nav_". $_SESSION["food_saver_lang"] .".php") && file_exists("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_first-time_". $_SESSION["food_saver_lang"] .".php") && file_exists("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_footer_". $_SESSION["food_saver_lang"] .".php")){
+    if(file_exists("resources/i18n/". $_SESSION["food_saver_lang"] ."/first-time.php") ){
 
-        //importa os ficheiros do idioma escolhido
-        //include_once("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_nav_". $_SESSION["food_saver_lang"] .".php");
-        include_once("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_first-time_". $_SESSION["food_saver_lang"] .".php");
-        //include_once("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_footer_". $_SESSION["food_saver_lang"] .".php");
-
-    //senao
+        include_once("resources/i18n/". $_SESSION["food_saver_lang"] ."/first-time.php");
+        
     }else{
 
-        //importa os ficheiros do idioma por defeito
-        //include_once("src/languages/pt-PT/i18n_nav_pt-PT.php");
-        include_once("src/languages/pt-PT/i18n_first-time_pt-PT.php");
-        //include_once("src/languages/pt-PT/i18n_footer_pt-PT.php");
+        include_once("resources/i18n/pt-PT/first-time.php");
 
     }
 
 //senao
 }else{
 
-    //importa os ficheiros do idioma por defeito
-    //include_once("src/languages/pt-PT/i18n_nav_pt-PT.php");
-    include_once("src/languages/pt-PT/i18n_first-time_pt-PT.php");
-    //include_once("src/languages/pt-PT/i18n_footer_pt-PT.php");
-
-    $admin = new Admin();
-
-    if($admin->getTotalAdmins() > 0){
-
-        header("Location: ./admin.php");
-
-    }
-
-    $admin->generateRandomAdmin();
+    include_once("resources/i18n/pt-PT/first-time.php");
 
 }
+
+$current_url = getCurrentURLWithoutLang();
+
+$manageAdmins = new ManageAdmins();
+
+if($manageAdmins->getTotalAdmins() > 0){
+
+    header("Location: ./admin.php");
+
+}
+
+$admin = $manageAdmins->generateRandomAdmin();
 
 ?>
 
@@ -56,11 +49,18 @@ if(isset($_SESSION["food_saver_lang"])){
 
     <title><?php echo $first_time_title; ?></title>
 
-    <link rel="icon" type="image/x-icon" href="./src/assets/logo.jpeg">
+    <link rel="icon" type="image/x-icon" href="./resources/assets/logo.jpeg">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="./src/styles/standart.css"/>
+    <link rel="stylesheet" href="./resources/styles/standart.css"/>
 </head>
 <body>
+
+    <header class="d-flex justify-content-end p-2">
+
+        <a class="m-1" href="<?php echo $current_url . "lang=pt-PT";?>"><img src="resources/assets/portugal.svg" height="20"/></a>
+        <a class="m-1" href="<?php echo $current_url . "lang=en-US";?>"><img src="resources/assets/usa.svg" height="20"/></a>
+
+    </header>
 
     <main class="container ">
 
@@ -68,7 +68,7 @@ if(isset($_SESSION["food_saver_lang"])){
 
             <div class="col-12 col-md-8 col-lg-6 text-center">
 
-                <img src="./src/assets/logo.jpeg" class="rounded mx-auto w-inherit" alt="<?php echo $logo_alt; ?>">
+                <img src="./resources/assets/logo.jpeg" class="rounded mx-auto size-inherit" alt="<?php echo $logo_alt; ?>">
 
             </div>
 
@@ -89,9 +89,9 @@ if(isset($_SESSION["food_saver_lang"])){
             <div class="col-12 col-md-6 col-lg-4">
 
                 <ul class="list-group shadow">
-                    <li class="list-group-item p-3"><strong><?php echo $name_label;?></strong><?php echo $admin->getName(); ?></li>
-                    <li class="list-group-item p-3"><strong><?php echo $username_label;?></strong><?php echo $admin->getUsername(); ?></li>
-                    <li class="list-group-item p-3"><strong><?php echo $password_label;?></strong><?php echo $admin->getPassword(); ?></li>
+                    <li class="list-group-item p-3"><strong><?php echo $name_label;?></strong><?php echo $admin["name"]; ?></li>
+                    <li class="list-group-item p-3"><strong><?php echo $username_label;?></strong><?php echo $admin["username"]; ?></li>
+                    <li class="list-group-item p-3"><strong><?php echo $password_label;?></strong><?php echo $admin["pwd"]; ?></li>
                 </ul>
 
             </div>

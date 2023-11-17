@@ -2,8 +2,6 @@
 
 session_start();
 
-session_unset();
-
-session_destroy();
+unset($_SESSION["food_saver_admin_id"]);
 
 header("Location: ./admin.php");

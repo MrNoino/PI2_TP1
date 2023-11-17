@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `FoodSaver`.`entidade` (
   `telefone` VARCHAR(45) NULL,
   `email` VARCHAR(150) NULL,
   `password` VARCHAR(200) NULL,
-  `ativo` TINYINT(1) NULL,
+  `ativo` TINYINT(1) DEFAULT 1,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 

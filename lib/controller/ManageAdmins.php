@@ -7,8 +7,8 @@ class ManageAdmins{
     private array $admins;
 
 
-    public function __construct(array $admins = []){
-        $this->admins = $admins;
+    public function __construct(bool $load = true){
+        
     }
 
     public function getAdmins(): array{
@@ -21,6 +21,94 @@ class ManageAdmins{
 
         $this->admins[] = $admin;
         return true;
+
+    }
+
+    public function insertAdmin(Admin $admin): void{
+
+        $db_handler = new DBWrapper();
+
+        $db_conn = $db_handler->get_connection();
+
+        $db_sta = $db_conn->prepare("CALL foodsaver.insert_admin(:username, :name, :password);");
+
+        $db_sta->execute([":username" => $admin->getUsername(), ":name" => $admin->getName(), ":password" => $admin->getPassword()]);
+
+
+
+    }
+
+    public function getTotalAdmins(): int{
+
+        $db_handler = new DBWrapper();
+
+        $db_conn = $db_handler->get_connection();
+
+        $db_sta = $db_conn->prepare("SELECT * FROM foodsaver.get_total_admins;");
+
+        $db_sta->execute();
+
+        $db_sta->setFetchMode(PDO::FETCH_COLUMN, 0);
+
+        return (int) $db_sta->fetch();
+
+    }
+
+    public function generateRandomAdmin(): ?array{
+
+        if($this->getTotalAdmins() != 0){
+
+            return null;
+
+        }
+
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!?@#$&*-_';
+        $pwd = "";
+        for ($i = 0; $i < 12; $i++) {
+
+            $n = rand(0, strlen($alphabet) -1);
+            $pwd .= $alphabet[$n];
+
+        }
+
+        $username = "a". uniqid();
+
+        $name = $username;
+
+        $random_admin = new Admin(username: $username, name: $name, password: $pwd);
+
+        $this->insertAdmin($random_admin);
+
+        return ["username" => $username, "name" => $name, "pwd" => $pwd];
+
+    }
+
+    public function login (string $username, string $password): int{
+
+        $db_handler = new DBWrapper();
+
+        $db_conn = $db_handler->get_connection();
+
+        $db_sta = $db_conn->prepare("CALL foodsaver.admin_login(:username);");
+
+        $db_sta->execute([":username" => $username]);
+
+        $db_sta->setFetchMode(PDO::FETCH_ASSOC);
+
+        $result = $db_sta->fetch();
+
+        if (is_null($result["id"]) && is_null($result["password"])){
+
+            return -1;
+
+        }else if(!password_verify($password, $result["password"])) {
+            
+            return -1;
+
+        }
+
+
+        return $result["id"];
 
     }
     

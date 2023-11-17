@@ -3,41 +3,51 @@
 session_start();
 
 include_once("./lib/utils.php");
+include_once("./lib/controller/ManageEntities.php");
 
 is_first_time();
 
-redirect_login("food_saver_entity_id", "offers.php");
+chooseLang();
 
 if(isset($_SESSION["food_saver_lang"])){
 
-    //verifica se os ficheiros do idioma existem
-    //se sim
-    if(file_exists("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_nav_". $_SESSION["food_saver_lang"] .".php") && file_exists("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_index_". $_SESSION["food_saver_lang"] .".php") && file_exists("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_footer_". $_SESSION["food_saver_lang"] .".php")){
+    if(file_exists("resources/i18n/". $_SESSION["food_saver_lang"] ."/index.php")){
 
-        //importa os ficheiros do idioma escolhido
-        //include_once("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_nav_". $_SESSION["food_saver_lang"] .".php");
-        include_once("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_index_". $_SESSION["food_saver_lang"] .".php");
-        //include_once("src/languages/". $_SESSION["food_saver_lang"] ."/i18n_footer_". $_SESSION["food_saver_lang"] .".php");
+        include_once("resources/i18n/". $_SESSION["food_saver_lang"] ."/index.php");
 
-    //senao
     }else{
 
-        //importa os ficheiros do idioma por defeito
-        //include_once("src/languages/pt-PT/i18n_nav_pt-PT.php");
-        include_once("src/languages/pt-PT/i18n_index_pt-PT.php");
-        //include_once("src/languages/pt-PT/i18n_footer_pt-PT.php");
+        include_once("resources/i18n/pt-PT/index.php");
 
     }
 
-//senao
 }else{
 
-    //importa os ficheiros do idioma por defeito
-    //include_once("src/languages/pt-PT/i18n_nav_pt-PT.php");
-    include_once("src/languages/pt-PT/i18n_index_pt-PT.php");
-    //include_once("src/languages/pt-PT/i18n_footer_pt-PT.php");
+    include_once("resources/i18n/pt-PT/index.php");
 
 }
+
+if(isset($_POST["login"])) {
+
+    if(isset($_POST["email"], $_POST["password"])) {
+
+        $manageEntities = new ManageEntities();
+
+        $id = $manageEntities->login($_POST["email"], $_POST["password"]);
+
+        if($id > 0){
+
+            $_SESSION["food_saver_entity_id"] = $id;
+
+        }
+
+    }
+
+}
+
+redirect_login("food_saver_entity_id", "offers.php");
+
+$current_url = getCurrentURLWithoutLang();
 
 ?>
 
@@ -49,20 +59,27 @@ if(isset($_SESSION["food_saver_lang"])){
 
     <title><?php echo $index_title; ?></title>
 
-    <link rel="icon" type="image/x-icon" href="./src/assets/logo.jpeg">
+    <link rel="icon" type="image/x-icon" href="./resources/assets/logo.jpeg">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="./src/styles/standart.css"/>
+    <link rel="stylesheet" href="./resources/styles/standart.css"/>
 </head>
 <body>
 
-    <main class="container ">
+    <header class="d-flex justify-content-end p-2">
+
+        <a class="m-1" href="<?php echo $current_url . "lang=pt-PT";?>"><img src="resources/assets/portugal.svg" height="20"/></a>
+        <a class="m-1" href="<?php echo $current_url . "lang=en-US";?>"><img src="resources/assets/usa.svg" height="20"/></a>
+
+    </header>
+
+    <main class="container mb-5">
 
         <div class="row justify-content-center mt-3">
 
             <div class="col-12 col-md-8 col-lg-6 text-center">
 
-                <img src="./src/assets/logo.jpeg" class="rounded mx-auto w-inherit" alt="<?php echo $logo_alt; ?>">
+                <img src="resources/assets/logo.jpeg" class="rounded mx-auto size-inherit" alt="<?php echo $logo_alt; ?>">
 
             </div>
 
@@ -78,22 +95,34 @@ if(isset($_SESSION["food_saver_lang"])){
 
         </div>
 
-        <form class="needs-validation">
+        <form class="needs-validation" method="POST">
 
             <div class="row g-3 justify-content-center mt-2">
 
                 <div class="col-12 col-md-6 col-lg-4">
-                    <label for="email" class="form-label"><?php echo $email_label; ?></label>
-                    <input type="email" class="form-control shadow " id="email" name="email" placeholder="<?php echo $email_placeholder; ?>" required>
+                    <label for="input_email" class="form-label"><?php echo $email_label; ?></label>
+                    <input type="email" class="form-control shadow <?php echo (isset($id) && $id == -1 ? "is-invalid": ""); ?>" id="input_email" name="email" placeholder="<?php echo $email_placeholder; ?>" required>
                 </div>
 
             </div>
             <div class="row g-3 justify-content-center mt-2 align-items-end">
                 <div class="col-12 col-md-6 col-lg-4">
-                    <label for="password" class="form-label"><?php echo $pwd_label; ?></label>
-                    <div class="input-group">
-                        <input id="input_password" type="password" class="form-control d-inline shadow" id="pwd" name="password" placeholder="<?php echo $pwd_placeholder; ?>" required>
-                        <button id="toggle_show_password" type="button" class="btn btn-outline-secondary bg-transparent shadow  float-end p-1"><img id="toggle_show_password_img" class="changed_image" src="./src/assets/eye.svg" height="35"></button>
+                    <label for="input_password" class="form-label"><?php echo $pwd_label; ?></label>
+                    <div class="input-group has-validation">
+                        <input id="input_password" type="password" class="form-control d-inline shadow <?php echo (isset($id) && $id == -1 ? "is-invalid": ""); ?>" name="password" placeholder="<?php echo $pwd_placeholder; ?>" required>
+                        <button id="toggle_show_password" onclick="toggleShowPassword('input_password', 'toggle_show_password_img')" type="button" class="btn btn-outline-secondary bg-transparent shadow  float-end p-1"><img id="toggle_show_password_img" class="changed_image" src="./resources/assets/eye.svg" height="35"></button>
+                        <?php
+
+                            if(isset($id) && $id == -1) {
+
+                                echo '<div class="invalid-feedback">
+                                        '. $invalid_login_label .'
+                                    </div>';
+
+                            }
+
+                        ?>
+                        
                     </div>
                 </div>
             </div>
@@ -101,7 +130,7 @@ if(isset($_SESSION["food_saver_lang"])){
             <div class="row g-3 justify-content-center mt-3">
 
                 <div class="col-12 col-md-4 col-lg-3 text-center">
-                    <button class="btn btn-primary w-100 shadow" type="submit"><?php echo $login_label; ?></button>
+                    <input class="btn btn-primary w-100 shadow" type="submit" name="login" value="<?php echo $login_label; ?>"/>
                 </div>
 
             </div>
@@ -111,6 +140,6 @@ if(isset($_SESSION["food_saver_lang"])){
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="./src/js/utils.js"></script>
+    <script type="text/javascript" src="./resources/js/utils.js"></script>
 </body>
 </html>
