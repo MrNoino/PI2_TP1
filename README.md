@@ -6,6 +6,6 @@ This is the pratical work nº1 at the subject Programming for Internet 2. The th
 
 # PI 2 - TP 1 - Plataforma Web de Combate ao Desperdício Alimentar: FoodSaver
 
-Este é trabalho prático nº1 na cadeira de Programação para a Internet 2. O tema do projeto em geral é desenvolver uma plataforma Web de combate ao desperdicio alimentar. No caso do TP 1 o objetivo é criar o backoffice de administração e gestão por parte de entidades e administradores com recurso ao modelo MVC em PHP.
+Este é o trabalho prático nº1 na cadeira de Programação para a Internet 2. O tema do projeto em geral é desenvolver uma plataforma Web de combate ao desperdicio alimentar. No caso do TP 1 o objetivo é criar o backoffice de administração e gestão por parte de entidades e administradores com recurso ao modelo MVC em PHP.
 
 **Nuno Lopes**

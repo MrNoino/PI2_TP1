@@ -1,7 +1,7 @@
 <?php
 
 $entity_title = "Food Saver - Entidade";
-$entity_label = "Entity";
+$entity_label = "Entidade";
 $no_entity_label = "Entidade não encontrada";
 $name_label = "Nome";
 $description_label = "Descrição";
@@ -12,6 +12,7 @@ $email_label = "Email";
 $status_label = "Estado";
 $active_label = "Ativo";
 $not_active_label = "Não Ativo";
+$logo_alt = "Logotipo da Entidade";
 
 
 ?>

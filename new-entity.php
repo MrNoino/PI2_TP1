@@ -21,13 +21,25 @@ foreach($langFiles as $langFile){
 
 if(isset($_POST["add"])) {
 
-    if(isset($_POST["name"], $_POST["description"], $_POST["address"], $_POST["phone_number"], $_POST["email"], $_POST["password"])){
+    if(isset($_POST["name"], $_POST["description"], $_FILES["logo"], $_POST["address"], $_POST["phone_number"], $_POST["email"], $_POST["password"])){
 
-        $entity = new Entity(name: $_POST["name"], description: $_POST["description"], address: $_POST["address"], phone_number: $_POST["phone_number"], email: $_POST["email"], password: $_POST["password"]);
+        $file_path = generateFilePath($_FILES["logo"], "resources/images/entities/");
+
+        if($file_path && move_uploaded_file($_FILES["logo"]["tmp_name"], $file_path["full_path"])){
+
+            $entity = new Entity(name: $_POST["name"], description: $_POST["description"], logo: $file_path["filename"], address: $_POST["address"], phone_number: $_POST["phone_number"], email: $_POST["email"], password: $_POST["password"]);
         
-        $manageEntities = new ManageEntities(false);
-        
-        $inserted = $manageEntities->insertEntity($entity);
+            $manageEntities = new ManageEntities(false);
+            
+            $inserted = $manageEntities->insertEntity($entity);
+
+        }
+
+        if(!$inserted){
+
+            unlink($full_path);
+
+        }
 
     }
 
@@ -53,6 +65,21 @@ if(isset($_POST["add"])) {
     <?php include_once("resources/layouts/admin-navbar.php"); ?>
 
     <main class="container mb-5">
+
+        <div class="row justify-content-center mt-3">
+
+            <div class="col text-center">
+
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="entities.php"><?php echo $entities_label; ?></a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo $new_entity_label; ?></li>
+                    </ol>
+                </nav>
+
+            </div>
+
+        </div>
 
         <div class="row justify-content-center mt-3">
 
@@ -91,7 +118,7 @@ if(isset($_POST["add"])) {
 
         ?>
 
-        <form class="needs-validation" method="POST">
+        <form class="needs-validation" method="POST" enctype="multipart/form-data">
 
             <div class="row g-3 justify-content-center mt-2">
 
@@ -115,7 +142,7 @@ if(isset($_POST["add"])) {
 
                 <div class="col-12 col-md-8 col-lg-6">
                     <label for="input_logo" class="form-label"><?php echo $logo_label; ?></label>
-                    <input type="file" class="form-control shadow" id="input_logo" name="logo" required>
+                    <input type="file" class="form-control shadow" id="input_logo" name="logo" accept="image/*" required>
                 </div>
 
             </div>
@@ -133,7 +160,7 @@ if(isset($_POST["add"])) {
 
                 <div class="col-12 col-md-8 col-lg-6">
                     <label for="input_phone_number" class="form-label"><?php echo $phone_number_label; ?></label>
-                    <input type="text" class="form-control shadow" id="input_phone_number" name="phone_number" pattern="[0-9]{9}" minlength="9" maxlength="9" inputmode="numeric" placeholder="<?php echo $phone_number_placeholder; ?>" required>
+                    <input type="tel" class="form-control shadow" id="input_phone_number" name="phone_number" pattern="[0-9]{9}" minlength="9" maxlength="9" inputmode="numeric" placeholder="<?php echo $phone_number_placeholder; ?>" required>
                 </div>
 
             </div>
@@ -143,6 +170,21 @@ if(isset($_POST["add"])) {
                 <div class="col-12 col-md-8 col-lg-6">
                     <label for="input_email" class="form-label"><?php echo $email_label; ?></label>
                     <input type="email" class="form-control shadow" id="input_email" name="email" placeholder="<?php echo $email_placeholder; ?>" required>
+                </div>
+
+            </div>
+
+            <div class="row g-3 justify-content-center mt-2">
+
+                <div class="col-12 col-md-8 col-lg-6">
+
+                    <label for="input_password" class="form-label"><?php echo $pwd_label; ?></label>
+
+                    <div class="input-group has-validation">
+                        <input id="input_password" type="password" class="form-control d-inline shadow" name="password" placeholder="<?php echo $pwd_placeholder; ?>" required>
+                        <button id="toggle_show_password" onclick="toggleShowPassword('input_password', 'toggle_show_password_img')" type="button" class="btn btn-outline-secondary bg-transparent shadow  float-end p-1"><img id="toggle_show_password_img" class="changed_image" src="./resources/assets/eye.svg" height="35"></button>
+                    </div>
+
                 </div>
 
             </div>

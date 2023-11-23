@@ -1,2 +1,4 @@
 duvidas.txt
 lib/db_config.php
+resources/images/entities/*
+resources/images/offers/*

@@ -54,6 +54,21 @@ if(isset($_GET["id"])){
 
             <div class="col text-center">
 
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="entities.php"><?php echo $entities_label; ?></a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo $entity_label. (isset($entity) ? " - " . $entity->getName() : ""); ?></li>
+                    </ol>
+                </nav>
+
+            </div>
+
+        </div>
+
+        <div class="row justify-content-center mt-3">
+
+            <div class="col text-center">
+
                 <h2 class="text-primary"><?php echo $entity_label . (isset($entity) ? " - " . $entity->getName() : "") ?></h2>
 
             </div>
@@ -83,6 +98,10 @@ if(isset($_GET["id"])){
                     <div class="m-2">
 
                             <strong>'. $logo_label .'</strong>
+                            <div class="d-flex justify-content-center">
+                                <img src="./resources/images/entities/'. $entity->getLogo() .'" class="img-thumbnail w-50" alt="'. $logo_alt .'"/>
+                            </div>
+                            
 
                     </div>
                     <div class="m-2">

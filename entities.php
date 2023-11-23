@@ -77,14 +77,14 @@ $manageEntities = new ManageEntities(true);
                     foreach($entities as $entity){
 
                         echo '<div class="list-group-item d-flex justify-content-between">
-                                <a href="entity.php?id='. $entity->getID() .'" class="w-100 text-decoration-none text-black">
+                                <a href="entity.php?id='. $entity->getId() .'" class="w-100 text-decoration-none text-black">
                                     <div class="h-100 d-flex align-items-center">
                                         <span>'. $entity->getName() .'</span>
                                     </div>
                                 </a>
                                 
                                 <div class="h-100 d-flex align-items-center">
-                                    <a class="btn btn-info" href="update-entity.php?id='. $entity->getID() .'">
+                                    <a class="btn btn-info" href="update-entity.php?id='. $entity->getId() .'">
                                         <img class="mb-1" src="./resources/assets/edit.svg" height="25"/>
                                     </a>
                                 </div>

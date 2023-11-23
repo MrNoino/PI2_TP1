@@ -32,9 +32,7 @@ class ManageAdmins{
 
         $db_sta = $db_conn->prepare("CALL foodsaver.insert_admin(:username, :name, :password);");
 
-        $db_sta->execute([":username" => $admin->getUsername(), ":name" => $admin->getName(), ":password" => $admin->getPassword()]);
-
-
+        $db_sta->execute([":username" => $admin->getUsername(), ":name" => $admin->getName(), ":password" => password_hash($admin->getPassword(), PASSWORD_BCRYPT, ["cost" => 12])]);
 
     }
 
@@ -109,6 +107,38 @@ class ManageAdmins{
 
 
         return $result["id"];
+
+    }
+
+    public function verifyPassword(int $id, string $password): bool{
+
+        $db_handler = new DBWrapper();
+
+        $db_conn = $db_handler->get_connection();
+
+        $db_sta = $db_conn->prepare("CALL foodsaver.get_admin(:id);");
+
+        $db_sta->execute([":id" => $id]);
+
+        $db_sta->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, "Admin");
+
+        $admin = $db_sta->fetch();
+
+        return password_verify($password, $admin->getPassword());
+
+    }
+
+    public function updatePassword(int $id, string $password): bool{
+
+        $db_handler = new DBWrapper();
+
+        $db_conn = $db_handler->get_connection();
+
+        $db_sta = $db_conn->prepare("CALL foodsaver.update_admin_password(:id, :password);");
+
+        $db_sta->execute([":id" => $id, "password" => password_hash($password, PASSWORD_BCRYPT, ["cost" => 12])]);
+
+        return (bool) $db_sta->rowCount();
 
     }
     

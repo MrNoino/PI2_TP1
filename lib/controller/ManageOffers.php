@@ -30,9 +30,26 @@ class ManageOffers{
 
     }
 
-    public function getOffers(): array{
-    
-        return $this->offers;
+    public function getOffers(?string $date = null): array{
+
+        if(!$date){
+
+            return $this->offers;
+
+        }else{
+
+            $filtered_offers = [];
+
+            foreach($this->offers as $offer){
+
+                if($offer->getDate() == $date)
+                    $filtered_offers[] = $offer;
+
+            }
+
+            return $filtered_offers;
+
+        }
     
     }
 
@@ -72,8 +89,9 @@ class ManageOffers{
 
             foreach($this->offers as $key => $offer){
 
-                if($offer->getID() == $id){
+                if($offer->getId() == $id){
 
+                    unlink("resources/images/offers/" . $offer->getImage());
                     unset($this->offers[$key]);
                     break;
 
@@ -90,12 +108,50 @@ class ManageOffers{
     public function getOffer(int $id): ?Offer {
 
         foreach($this->offers as $offer){
-            if($offer->getID() == $id){
+            if($offer->getId() == $id){
                 return $offer;
             }
         }
 
         return null;
+
+    }
+
+    public function updateOffer(Offer $offer): bool{
+
+        $db_handler = new DBWrapper();
+
+        $db_conn = $db_handler->get_connection();
+
+        $db_sta = $db_conn->prepare("CALL foodsaver.update_offer(:id, :entity_id, :name, :description, :image, :price, :date, :available);");
+
+        $db_sta->execute([":id" => $offer->getId(),
+                            ":entity_id" => $offer->getEntityID(),
+                            ":name" => $offer->getName(), 
+                            ":description" => $offer->getDescription(), 
+                            ":image" => $offer->getImage(),
+                            ":price" => $offer->getPrice(),
+                            ":date" => $offer->getDate(),
+                            ":available" => $offer->isAvailable()]);
+
+        $updated = (bool) $db_sta->rowCount();
+
+        if($updated){
+
+            foreach($this->offers as $key => $o){
+
+                if($offer->getId() == $o->getId()){
+
+                    $this->offers[$key] = $offer;
+                    break;
+
+                }
+
+            }
+
+        }
+
+        return $updated;
 
     }
 

@@ -23,8 +23,8 @@ $current_url = getCurrentURLWithoutLang();
                 <div class="offcanvas-header">
                     <h5 class="offcanvas-title" id="menuLabel">Food Saver - Menu</h5>
                     <div>
-                        <a href="<?php echo $current_url . "lang=pt-PT";?>"><img src="resources/assets/portugal.svg" height="20"/></a>
-                        <a href="<?php echo $current_url . "lang=en-US";?>"><img src="resources/assets/usa.svg" height="20"/></a>
+                        <a href="<?php echo $current_url . "lang=pt-PT";?>"><img <?php echo ($_SESSION["food_saver_lang"] == "pt-PT" ? 'class="ps-1 pe-1 border border-primary-subtle"' : ""); ?> src="resources/assets/portugal.svg" height="20"/></a>
+                        <a href="<?php echo $current_url . "lang=en-US";?>"><img <?php echo ($_SESSION["food_saver_lang"] == "en-US" ? 'class="ps-1 pe-1 border border-primary-subtle"' : ""); ?> src="resources/assets/usa.svg" height="20"/></a>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>

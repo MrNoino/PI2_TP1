@@ -54,6 +54,21 @@ if(isset($_GET["id"])){
 
             <div class="col text-center">
 
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="offers.php"><?php echo $offers_label; ?></a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo $offer_label. (isset($offer) ? " - " . $offer->getName() : ""); ?></li>
+                    </ol>
+                </nav>
+
+            </div>
+
+        </div>
+
+        <div class="row justify-content-center mt-3">
+
+            <div class="col text-center">
+
                 <h2 class="text-primary"><?php echo $offer_label . (isset($offer) ? " - " . $offer->getName() : "") ?></h2>
 
             </div>
@@ -83,6 +98,9 @@ if(isset($_GET["id"])){
                         <div class="m-2">
 
                                 <strong>'. $image_label .'</strong>
+                                <div class="d-flex justify-content-center">
+                                    <img src="./resources/images/offers/'. $offer->getImage() .'" class="img-thumbnail w-50" alt="'. $logo_alt .'"/>
+                                </div>
 
                         </div>
                         <div class="m-2">

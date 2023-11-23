@@ -107,33 +107,29 @@ if(isset($_POST["delete"])){
 
             <?php
 
-                $offers = $manageOffers->getOffers();
+                $offers = $manageOffers->getOffers(date("Y-m-d"));
 
                 if(count($offers) > 0){
 
-                    foreach($manageOffers->getOffers() as $offer){
-
-                        if($offer->getDate() != date("Y-m-d"))
-                            continue;
-                        
+                    foreach($offers as $offer){
 
                         echo '<div class="list-group-item d-flex justify-content-between">
-                        <a href="offer.php?id='. $offer->getID() .'" class="w-100 text-decoration-none text-black">
+                        <a href="offer.php?id='. $offer->getId() .'" class="w-100 text-decoration-none text-black">
                             <div class="h-100 d-flex align-items-center">
                             
                                 <span>'. $offer->getName() .'</span>
                             </div>
                         </a>
                             
-                        <form class="h-100 d-flex align-items-center justify-content-end" method="POST">
-                            <a class="btn btn-info m-1" href="update-offer.php?id='. $offer->getID() .'">
+                        <div class="h-100 d-flex align-items-center justify-content-end">
+                            <a class="btn btn-info m-1" href="update-offer.php?id='. $offer->getId() .'">
                                 <img class="mb-1" src="./resources/assets/edit.svg" height="25"/>
                             </a>
-                            <input type="hidden" name="id" value="'. $offer->getID() .'"/>
-                            <button type="submit" name="delete" class="btn btn-danger">
+                            <input type="hidden" name="id" value="'. $offer->getId() .'"/>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger" onclick="changeModal('. $offer->getId().',\''. $offer->getName() .'\')">
                                 <img class="" src="./resources/assets/trash.svg" height="25"/>
                             </button>
-                        </form>
+                        </div>
                         
                     </div>';
     
@@ -154,6 +150,36 @@ if(isset($_POST["delete"])){
 
     </main>
 
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    
+        <div class="modal-dialog modal-dialog-centered">
+
+            <form class="modal-content" method="POST">
+
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel"><?php  echo $modal_title; ?></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <?php echo $are_you_sure_to_delete_label; ?>:
+                    <label id="offer_name"></label>
+                    <input type="hidden" id="offer_id" name="id" />
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php  echo $close_label; ?></button>
+                    <button type="submit" id="btn_delete" name="delete" class="btn btn-danger"><?php  echo $confirm_label; ?></button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="./resources/js/utils.js"></script>
+    <script type="text/javascript" src="./resources/js/entities.js"></script>
 </body>
 </html>

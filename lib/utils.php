@@ -142,5 +142,23 @@ function getCurrentURLWithoutLang(): string{
 
 }
 
+function generateFilePath($file, 
+                            string $base_path = "resources/images/entities/", 
+                            array $supported_types = ["image/gif" => ".gif", "image/png" => ".png", "image/jpeg" => ".jpg" ]): ?array{
+
+    if(in_array($file["type"], array_keys($supported_types))){
+
+        $filename = md5(time()) . "-" . md5($file["name"]) . $supported_types[$file["type"]]; 
+
+        return ["full_path" => $base_path . $filename, "filename" => $filename];
+
+    }else{
+
+        return null;
+
+    }
+
+}
+
 
 ?>

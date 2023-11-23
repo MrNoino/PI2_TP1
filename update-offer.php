@@ -27,11 +27,40 @@ if(isset($_GET["id"])){
 
 }
 
-if(isset($_POST["update"])) {
+if(isset($_POST["update"], $_GET["id"])) {
 
     if(isset($_POST["name"], $_POST["description"], $_POST["price"])) {
 
-        
+        if(isset($_FILES["image"])){
+
+            $file_path = generateFilePath($_FILES["image"], "resources/images/offers/");
+
+        }
+
+        if(isset($file_path) && move_uploaded_file($_FILES["image"]["tmp_name"], $file_path["full_path"])){
+
+            $old_image = $offer->getImage();
+            $offer = new Offer(id: $_GET["id"], entity_id: $_SESSION["food_saver_entity_id"], name: $_POST["name"], description: $_POST["description"], image: $file_path["filename"], price: $_POST["price"]);
+
+        }else{
+
+            $offer = new Offer(id: $_GET["id"], entity_id: $_SESSION["food_saver_entity_id"], name: $_POST["name"], description: $_POST["description"], price: $_POST["price"]);
+
+        }
+
+        $updated = $manageOffers->updateOffer($offer);
+
+        if(!$updated){
+
+            unlink($full_path);
+
+        }else if($updated && !empty($old_image)){
+
+            unlink("resources/images/offers/" . $old_image);
+
+        }
+
+        $offer = $manageOffers->getOffer($_GET["id"]);
 
     }
 
@@ -59,6 +88,21 @@ if(isset($_POST["update"])) {
     ?>
 
     <main class="container mb-5">
+
+        <div class="row justify-content-center mt-3">
+
+            <div class="col text-center">
+
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="offers.php"><?php echo $offers_label; ?></a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo $update_offer_label . (isset($offer) ? " - ". $offer->getName() : ""); ?></li>
+                    </ol>
+                </nav>
+
+            </div>
+
+        </div>
 
         <div class="row justify-content-center mt-3">
 
@@ -95,7 +139,7 @@ if(isset($_POST["update"])) {
 
         if(isset($offer)){
 
-            echo '<form class="needs-validation" method="POST">
+            echo '<form class="needs-validation" method="POST" enctype="multipart/form-data">
 
                     <div class="row g-3 justify-content-center mt-2">
 
@@ -119,7 +163,7 @@ if(isset($_POST["update"])) {
 
                         <div class="col-12 col-md-8 col-lg-6">
                             <label for="input_image" class="form-label">'. $image_label .'</label>
-                            <input type="file" class="form-control shadow" id="input_image" name="image">
+                            <input type="file" class="form-control shadow" id="input_image" accept="image/*" name="image">
                         </div>
 
                     </div>
@@ -136,7 +180,7 @@ if(isset($_POST["update"])) {
                     <div class="row g-3 justify-content-center mt-3">
 
                         <div class="col-12 col-md-5 col-lg-3 text-center">
-                            <input class="btn btn-info w-100 shadow" name="update" type="submit" value="'. $update_offer_label .'"/>
+                            <input class="btn btn-info text-white w-100 shadow" name="update" type="submit" value="'. $update_offer_label .'"/>
                         </div>
 
                     </div>

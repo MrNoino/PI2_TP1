@@ -7,3 +7,6 @@ $name_label = "Nome";
 $description_label = "Descrição";
 $image_label = "Imagem";
 $price_label = "Preço";
+$logo_alt = "Imagem da Oferta";
+
+?>

@@ -19,6 +19,24 @@ foreach($langFiles as $langFile){
 
 }
 
+if(isset($_POST["update"])){
+
+    if(isset($_POST["current_password"], $_POST["new_password"])){
+
+        $manageAdmins = new ManageAdmins();
+
+        $password_match = $manageAdmins->verifyPassword($_SESSION["food_saver_admin_id"], $_POST["current_password"]);
+
+        if($password_match){
+
+            $updated = $manageAdmins->updatePassword($_SESSION["food_saver_admin_id"], $_POST["new_password"]);
+
+        }
+
+    }
+
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -50,6 +68,26 @@ foreach($langFiles as $langFile){
 
         </div>
 
+        <?php
+            
+            if(isset($updated)){
+
+                if(!$updated){
+
+                    displayAlert($unsuccess_label, "resources/assets/close.svg", "danger");
+
+                }else{
+
+                    displayAlert($success_label, "resources/assets/success.svg", "success");
+
+                }
+
+            }
+            
+            
+
+        ?>
+
         <div class="row g-3 justify-content-center mt-2">
 
             <form class="needs-validation" method="POST">
@@ -58,8 +96,19 @@ foreach($langFiles as $langFile){
                     <div class="col-12 col-md-8 col-lg-6">
                         <label for="input_current_password" class="form-label"><?php echo $current_pwd_label; ?></label>
                         <div class="input-group">
-                            <input id="input_current_password" type="password" class="form-control d-inline shadow" name="current_password" placeholder="<?php echo $current_pwd_placeholder; ?>" required>
+                            <input id="input_current_password" type="password" class="form-control d-inline shadow  <?php echo (isset($password_match) && !$password_match ? "is-invalid": ""); ?>" name="current_password" placeholder="<?php echo $current_pwd_placeholder; ?>" required>
                             <button id="toggle_show_current_password" onclick="toggleShowPassword('input_current_password', 'toggle_show_current_password_img')" type="button" class="btn btn-outline-secondary bg-transparent shadow float-end p-1"><img id="toggle_show_current_password_img" class="changed_image" src="./resources/assets/eye.svg" height="35"></button>
+                            <?php
+
+                                if(isset($password_match) && !$password_match) {
+
+                                    echo '<div class="invalid-feedback">
+                                            '. $password_not_match_label .'
+                                        </div>';
+
+                                }
+
+                            ?>
                         </div>
                     </div>
                 </div>

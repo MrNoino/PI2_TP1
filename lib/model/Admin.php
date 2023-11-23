@@ -13,7 +13,7 @@ class Admin{
         $this->id = $id;
         $this->username = $username;
         $this->name = $name;
-        $this->password = password_hash($password, PASSWORD_BCRYPT, ["cost" => 12]); 
+        $this->password = $password; 
     }
 
     public function getId(): int{

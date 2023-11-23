@@ -21,13 +21,26 @@ foreach($langFiles as $langFile){
 
 if(isset($_POST["add"])) {
 
-    if(isset($_POST["name"], $_POST["description"], $_POST["price"])) {
+    if(isset($_POST["name"], $_POST["description"], $_FILES["image"], $_POST["price"])) {
 
-        $offer = new Offer(entity_id: $_SESSION["food_saver_entity_id"], name: $_POST["name"], description: $_POST["description"], price: $_POST["price"]);
+        $file_path = generateFilePath($_FILES["image"], "resources/images/offers/");
 
-        $manageOffers = new ManageOffers(false); 
+        if($file_path && move_uploaded_file($_FILES["image"]["tmp_name"], $file_path["full_path"])){
 
-        $inserted =$manageOffers->insertOffer($offer);
+            $offer = new Offer(entity_id: $_SESSION["food_saver_entity_id"], name: $_POST["name"], description: $_POST["description"], image: $file_path["filename"], price: $_POST["price"]);
+
+            $manageOffers = new ManageOffers(false); 
+
+            $inserted =$manageOffers->insertOffer($offer);
+
+
+        }
+
+        if(!$inserted){
+
+            unlink($full_path);
+
+        }
 
     }
 
@@ -55,6 +68,21 @@ if(isset($_POST["add"])) {
     ?>
 
     <main class="container mb-5">
+
+        <div class="row justify-content-center mt-3">
+
+            <div class="col text-center">
+
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="offers.php"><?php echo $offers_label; ?></a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo $new_offer_label; ?></li>
+                    </ol>
+                </nav>
+
+            </div>
+
+        </div>
 
         <div class="row justify-content-center mt-3">
 
@@ -93,7 +121,7 @@ if(isset($_POST["add"])) {
 
         ?>
 
-        <form class="needs-validation" method="POST">
+        <form class="needs-validation" method="POST" enctype="multipart/form-data">
 
             <div class="row g-3 justify-content-center mt-2">
 
@@ -117,7 +145,7 @@ if(isset($_POST["add"])) {
 
                 <div class="col-12 col-md-8 col-lg-6">
                     <label for="input_image" class="form-label"><?php echo $image_label; ?></label>
-                    <input type="file" class="form-control shadow" id="input_image" name="image" required>
+                    <input type="file" class="form-control shadow" id="input_image" name="image" accept="image/*" required>
                 </div>
 
             </div>

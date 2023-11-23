@@ -27,11 +27,40 @@ if(isset($_GET["id"])){
 
 }
 
-if(isset($_POST["update"])) {
+if(isset($_POST["update"], $_GET["id"])) {
 
-    if(isset($_POST["name"], $_POST["description"], $_POST["address"], $_POST["phone_number"], $_POST["email"], $_POST["password"])){
+    if(isset($_POST["name"], $_POST["description"], $_POST["address"], $_POST["phone_number"], $_POST["email"])){
 
+        if(isset($_FILES["logo"])){
 
+            $file_path = generateFilePath($_FILES["logo"], "resources/images/entities/");
+
+        }
+
+        if(isset($file_path) && move_uploaded_file($_FILES["logo"]["tmp_name"], $file_path["full_path"])){
+
+            $old_image = $entity->getLogo();
+            $entity = new Entity(id: $_GET["id"], name: $_POST["name"], description: $_POST["description"], logo: $file_path["filename"], address: $_POST["address"], phone_number: $_POST["phone_number"], email: $_POST["email"]);
+
+        }else{
+
+            $entity = new Entity(id: $_GET["id"], name: $_POST["name"], description: $_POST["description"], address: $_POST["address"], phone_number: $_POST["phone_number"], email: $_POST["email"]);
+
+        }
+
+        $updated = $manageEntities->updateEntity($entity);
+
+        if(!$updated){
+
+            unlink($full_path);
+
+        }else if($updated && !empty($old_image)){
+
+            unlink("resources/images/entities/" . $old_image);
+
+        }
+
+        $entity = $manageEntities->getEntity($_GET["id"]);
 
     }
 
@@ -64,6 +93,21 @@ if(isset($_POST["update"])) {
 
             <div class="col text-center">
 
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="entities.php"><?php echo $entities_label; ?></a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo $update_entity_label . (isset($entity) ? " - ". $entity->getName() : ""); ?></li>
+                    </ol>
+                </nav>
+
+            </div>
+
+        </div>
+
+        <div class="row justify-content-center mt-3">
+
+            <div class="col text-center">
+    
                 <h2 class="text-primary"><?php echo $update_entity_label . (isset($entity) ? " - ". $entity->getName() : "") ?></h2>
 
             </div>
@@ -95,7 +139,7 @@ if(isset($_POST["update"])) {
 
         if(isset($entity)){
 
-            echo '<form class="needs-validation" method="POST">
+            echo '<form class="needs-validation" method="POST" enctype="multipart/form-data">
 
                     <div class="row g-3 justify-content-center mt-2">
 
@@ -119,7 +163,7 @@ if(isset($_POST["update"])) {
 
                         <div class="col-12 col-md-8 col-lg-6">
                             <label for="input_logo" class="form-label">'. $logo_label .'</label>
-                            <input type="file" class="form-control shadow" id="input_logo" name="logo">
+                            <input type="file" class="form-control shadow" id="input_logo" accept="image/*" name="logo">
                         </div>
 
                     </div>
@@ -137,7 +181,7 @@ if(isset($_POST["update"])) {
 
                         <div class="col-12 col-md-8 col-lg-6">
                             <label for="input_phone_number" class="form-label">'. $phone_number_label .'</label>
-                            <input type="text" class="form-control shadow" id="input_phone_number" name="phone_number"  value="'. $entity->getPhoneNumber() .'" pattern="[0-9]{9}" minlength="9" maxlength="9" inputmode="numeric" placeholder="'. $phone_number_placeholder .'" required>
+                            <input type="tel" class="form-control shadow" id="input_phone_number" name="phone_number"  value="'. $entity->getPhoneNumber() .'" pattern="[0-9]{9}" minlength="9" maxlength="9" inputmode="numeric" placeholder="'. $phone_number_placeholder .'" required>
                         </div>
 
                     </div>
@@ -165,7 +209,7 @@ if(isset($_POST["update"])) {
                     <div class="row g-3 justify-content-center mt-3">
 
                         <div class="col-12 col-md-5 col-lg-3 text-center">
-                            <input class="btn btn-info w-100 shadow" name="add" type="submit" value="'. $update_entity_label .'"/>
+                            <input class="btn btn-info text-white w-100 shadow" name="update" type="submit" value="'. $update_entity_label .'"/>
                         </div>
 
                     </div>

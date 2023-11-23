@@ -6,13 +6,13 @@ class Offer{
     private ?int $entity_id;
     private string $name;
     private string $description;
-    private string $image;
+    private ?string $image;
     private float $price;
     private string $date;
     private bool $available;
 
 
-    public function __construct(?int $id = null, ?int $entity_id = null, string $name = "", string $description = "", string $image = "", float $price = 0, bool $available = true){
+    public function __construct(?int $id = null, ?int $entity_id = null, string $name = "", string $description = "", ?string $image = null, float $price = 0, ?string $date = null,  bool $available = true){
 
         $this->id = $id;
         $this->entity_id = $entity_id;
@@ -20,7 +20,10 @@ class Offer{
         $this->description = $description;
         $this->image = $image;
         $this->price = $price;
-        $this->date = date("Y-m-d");
+        if(!$date)
+            $this->date = date('Y-m-d');
+        else
+            $this->date = $date;
         $this->available = $available;
         
     }
@@ -41,7 +44,7 @@ class Offer{
         return $this->description;
     }
 
-    public function getImage(): string{
+    public function getImage(): ?string{
         return $this->image;
     }
 

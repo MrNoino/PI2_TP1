@@ -12,5 +12,6 @@ $email_label = "Email";
 $status_label = "Status";
 $active_label = "Active";
 $not_active_label = "Not Active";
+$logo_alt = "Logo of the Entity";
 
 ?>
