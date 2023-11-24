@@ -28,14 +28,6 @@ if(isset($_SESSION["food_saver_lang"])){
 
 }
 
-/*
-
-Nome: a655785622e834
-Nome de Utilizador: a655785622e834
-Palavra Passe: 4qTu#bkzmKrK
-
-*/
-
 $manageAdmins = new ManageAdmins();
 
 if(isset($_POST["login"])){
@@ -77,8 +69,8 @@ $current_url = getCurrentURLWithoutLang();
 
     <header class="d-flex justify-content-end p-2">
 
-        <a class="m-1" href="<?php echo $current_url . "lang=pt-PT";?>"><img src="resources/assets/portugal.svg" height="20"/></a>
-        <a class="m-1" href="<?php echo $current_url . "lang=en-US";?>"><img src="resources/assets/usa.svg" height="20"/></a>
+        <a href="<?php echo $current_url . "lang=pt-PT";?>"><img <?php echo ($_SESSION["food_saver_lang"] == "pt-PT" ? 'class="ps-1 pe-1 border border-primary-subtle"' : ""); ?> src="resources/assets/portugal.svg" height="20"/></a>
+        <a href="<?php echo $current_url . "lang=en-US";?>"><img <?php echo ($_SESSION["food_saver_lang"] == "en-US" ? 'class="ps-1 pe-1 border border-primary-subtle"' : ""); ?> src="resources/assets/usa.svg" height="20"/></a>
 
     </header>
 

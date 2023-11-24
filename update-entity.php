@@ -40,19 +40,19 @@ if(isset($_POST["update"], $_GET["id"])) {
         if(isset($file_path) && move_uploaded_file($_FILES["logo"]["tmp_name"], $file_path["full_path"])){
 
             $old_image = $entity->getLogo();
-            $entity = new Entity(id: $_GET["id"], name: $_POST["name"], description: $_POST["description"], logo: $file_path["filename"], address: $_POST["address"], phone_number: $_POST["phone_number"], email: $_POST["email"]);
+            $entity = new Entity(id: $_GET["id"], name: $_POST["name"], description: $_POST["description"], logo: $file_path["filename"], address: $_POST["address"], phone_number: $_POST["phone_number"], email: $_POST["email"], active: (int) isset($_POST["active"]));
 
         }else{
 
-            $entity = new Entity(id: $_GET["id"], name: $_POST["name"], description: $_POST["description"], address: $_POST["address"], phone_number: $_POST["phone_number"], email: $_POST["email"]);
+            $entity = new Entity(id: $_GET["id"], name: $_POST["name"], description: $_POST["description"], address: $_POST["address"], phone_number: $_POST["phone_number"], email: $_POST["email"], active: (int) isset($_POST["active"]));
 
         }
 
         $updated = $manageEntities->updateEntity($entity);
 
-        if(!$updated){
+        if(!$updated && isset($file_path)){
 
-            unlink($full_path);
+            unlink($file_path["full_path"]);
 
         }else if($updated && !empty($old_image)){
 
@@ -74,7 +74,7 @@ if(isset($_POST["update"], $_GET["id"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title><?php echo $update_entity_title ?></title>
+    <title><?php echo $update_entity_title; ?></title>
 
     <link rel="icon" type="image/x-icon" href="./resources/assets/logo.jpeg">
     

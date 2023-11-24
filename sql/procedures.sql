@@ -49,7 +49,7 @@ CREATE PROCEDURE entity_login(IN a_email VARCHAR(150))
 BEGIN
     SELECT id, password
 			FROM entidade
-            WHERE email = a_email;
+            WHERE email = a_email and ativo = 1;
 END $$
 DELIMITER ;
 

@@ -49,7 +49,7 @@ class ManageEntities{
                             ":phone_number" => $entity->getPhoneNumber(),
                             ":email" => $entity->getEmail(),
                             ":password" => password_hash($entity->getPassword(), PASSWORD_BCRYPT, ["cost" => 12]),
-                            ":active" => $entity->isActive()]);
+                            ":active" => (int) $entity->isActive()]);
 
         return (bool) $db_sta->rowCount();
 
@@ -69,7 +69,7 @@ class ManageEntities{
 
         $result = $db_sta->fetch();
 
-        if (is_null($result["id"]) && is_null($result["password"])){
+        if (!$result || is_null($result["id"]) && is_null($result["password"])){
 
             return -1;
 
@@ -110,7 +110,7 @@ class ManageEntities{
                             ":address" => $entity->getAddress(),
                             ":phone_number" => $entity->getPhoneNumber(),
                             ":email" => $entity->getEmail(),
-                            ":active" => $entity->isActive()]);
+                            ":active" => (int) $entity->isActive()]);
 
         $updated = (bool) $db_sta->rowCount();
 

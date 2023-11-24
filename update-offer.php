@@ -52,7 +52,7 @@ if(isset($_POST["update"], $_GET["id"])) {
 
         if(!$updated){
 
-            unlink($full_path);
+            unlink($file_path["full_path"]);
 
         }else if($updated && !empty($old_image)){
 
